@@ -6,7 +6,7 @@ public class Tarea1
 		new Main();
     }
 
-    public Main()
+    public Tarea1()
     {
         Scanner sc = new Scanner(System.in);
                 //System.out.println("Ingrese la expresion regular: ");
