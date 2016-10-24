@@ -2,6 +2,17 @@ import java.util.*;
 
 public class Tarea1
 {
+    public void agregarEstado(ArrayList lista, int contador)
+    {
+        String estado = crearEstado(contador);
+        lista.add(estado);
+    }
+    
+    public String crearEstado(int contador)
+    {
+        contador++;
+        return ("q" + contador);
+    }
 	public static void main(String[] args) {
 		new Tarea1();
     }
@@ -19,13 +30,34 @@ public class Tarea1
 		ArrayList<Character> sigma = new ArrayList<>();
 		ArrayList<String> states = new ArrayList<>();
 		ArrayList<Trans> trans = new ArrayList<>();
+                String s;
+                ArrayList<String> F = new ArrayList<>();
 
 		String q = "q0";
-		int cont = 1;
+                s = q;
+		int cont = 0;
 
 		states.add(q);
+                String[] textSplit = regex.split("[|]");
+                
+                /*for (int i = 0; i < textSplit.length; i++)
+                {
+                    System.out.println("j: " + textSplit[i]);
 
+                }*/
+                
+                //clausula |
+                 //agregar estados             
+                agregarEstado(states, cont);
+                agregarEstado(states, cont);
+                
+                
+                for (int i = 0; i < textSplit.length; i++)
+        {
+            System.out.println("s: " + states.get(i));            
+        }
 		char[] characters = regex.toCharArray();
+                
 		for (int i = 0; i < characters.length ; i++) {
 			if(characters[i] == '.' || characters[i] == '*')
 			{
@@ -45,8 +77,8 @@ public class Tarea1
 			}
 		}
     }
-	
 }
+
 
 class Trans
 {
