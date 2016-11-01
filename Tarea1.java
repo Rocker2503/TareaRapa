@@ -34,8 +34,6 @@ public class Tarea1
         String s;
         ArrayList<String> finals = new ArrayList<>();
 
-        boolean isKleene = false;
-
 		String q = "q0";
                 s = q;
 		int cont = 1;
@@ -59,78 +57,114 @@ public class Tarea1
         //{
             System.out.println("s: " + states.get(0));            
         //}
-		char[] characters = regex.toCharArray();
+		
          
+		for (int j = 0;j < textSplit.length ;j++ ) {
+				
+			char[] characters = textSplit[j].toCharArray();
+			String start = crearEstado(cont);
+			cont++;
+			states.add(start);
+			Trans t = new Trans(s, start, '_');
 
-		for (int i = 1; i < characters.length ; i++) {
-			if(characters[i-1] == '.')
-			{
-				//todo esto crea los estados para consumir la letra antes del .
-				String sFirst = crearEstado(cont);
-				cont++;
-				String eFirst = crearEstado(cont);
-				cont++;
-				states.add(sFirst);
-				states.add(eFirst);
-				Trans startTrans = new Trans(s, sFirst, '_');
-				Trans consumeTrans = new Trans(sFirst,eFirst,characters[i-2]);
-				trans.add(startTrans);
-				trans.add(consumeTrans);
+			String aux = "a"; //parche 
 
-				//Aca se hace la transicion vacia para la siguiente letra 
-				String sStart = crearEstado(cont);
-				cont++;
-				states.add(sStart);
-				Trans t2 = new Trans(eFirst, sStart, '_');
-				trans.add(t2);
+			for (int i = 1; i < characters.length ; i++) {
+				if(characters[i-1] == '.')
+				{
+					if( i-2 > 0 && characters[i-2] == '*')
+					{
+						String eFirst = crearEstado(cont);
+						cont++;
+						states.add(eFirst);
+						Trans consumeTrans = new Trans(start, eFirst,'_');
+						trans.add(consumeTrans);
+ 
+						String sStart = crearEstado(cont);
+						cont++;
+						states.add(sStart);
+						Trans t2 = new Trans(eFirst, sStart, characters[i]);
+						trans.add(t2);
 
-				//Consumi la letra despues del .
-				String sEnd = crearEstado(cont);
-				cont++;
-				states.add(sEnd);
-				Trans t3 = new Trans(sStart,sEnd, characters[i]);
-				trans.add(t3);
+						start = sStart;
+					}
+					else
+					{
+						String eFirst = crearEstado(cont);
+						cont++;
+						states.add(eFirst);
+						Trans t = new Trans(start, eFirst, characters[i-2]);
+						trans.add(t);
 
-				finals.add(sEnd);
+						String empty = crearEstado(cont);
+						cont++;
+						states.add(empty);
+						Trans t2 = new Trans(eFirst, empty, '_');
+						trans.add(t2);
+
+						String eSecond = crearEstado(cont);
+						cont++;
+						states.add(eSecond);
+						Trans t3 = new Trans(empty, eSecond, characters[i]);
+						trans.add(t3);
+
+						start = eSecond;
+						aux = empty;
+					}
+				}
+				else if(characters[i] == '*')
+				{
+					if(i-2 > 0 && characters[i-2] == '.')
+					{
+					//conectar estado inicial con el inicial de la clausula de kleene
+						Trans v = new Trans(start, aux, '_');
+						trans.add(v);
+						String end = crearEstado(cont);
+						cont++;
+						states.add(end);
+						Trans consume = new Trans(aux, end, '_'); 
+						trans.add(consume);
+						Trans con = new Trans(start, end, '_');
+						trans.add(con);
+
+						start = end;
+					}
+					else
+					{
+						String end = crearEstado(cont);
+						states.add(end);
+						cont++;
+						Trans t = new Trans(start, end, characters[i-1]);
+						Trans revT = new Trans(end,start, '_');
+						trans.add(t);
+						trans.add(revT);
+
+						String aux2 = crearEstado(cont);
+						cont++;
+						states.add(aux2);
+						Trans t2 = new Trans(start, aux2, '_');
+						Trans t3 = new Trans(end, aux2, '_');
+						trans.add(t2);
+						trans.add(t3);
+
+						start = aux2;
+					}
+				}
+				
+				else
+				{
+					i--;
+					if(!sigma.contains(characters[i])){sigma.add(characters[i]);}
+					i++;
+				}	
 			}
-			else if(characters[i] == '*')
-			{
-				//conectar estado inicial con el inicial de la clausula de kleene
-				isKleene = true;
-				String start = crearEstado(cont);
-				cont++;
-				String end = crearEstado(cont);
-				cont++;
 
-				Trans ini = new Trans(s, start, '_');
-				states.add(start);
-				states.add(end);
-				trans.add(ini);
+			finals.add(start);
 
-				finals.add(end);
-				Trans t = new Trans(start, end, characters[i-1]);
-				Trans t2 = new Trans(end, start, '_');
-				trans.add(t);
-				trans.add(t2);
-
-			}
-			
-			else
-			{
-				i--;
-				if(!sigma.contains(characters[i])){sigma.add(characters[i]);}
-				i++;
-			}	
 		}
-
 
 		String finalState = crearEstado(cont);
 		states.add(finalState);
-		if(isKleene)
-		{
-			Trans t = new Trans(s,finalState, '_');
-			trans.add(t);
-		}
 
 		for(int i = 0; i < finals.size() ; i++)
 		{
@@ -148,6 +182,11 @@ public class Tarea1
 		for (int i = 0; i < trans.size(); i++ ) {
 			trans.get(i).printTransition();
 		}
+
+
+		HashMap<Integer,ArrayList<String>> statesMap = new HashMap<>();
+		cont = 0;
+		
 
     }
 }
