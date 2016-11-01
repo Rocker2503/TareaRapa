@@ -13,6 +13,29 @@ public class Tarea1
         //contador++;
         return ("q" + contador);
     }
+    
+    public String obtenerTransicion(int estadoI, int sigmaJ, ArrayList<String> states, ArrayList<Character> sigma, ArrayList<Trans> trans)
+    {
+        String estadoL = states.get(estadoI);
+        char sigmaL = sigma.get(sigmaJ);
+        
+        String transicion = "";
+        
+        for (int i = 0; i < trans.size(); i++)
+        {
+            if(trans.get(i).getStart().equals(estadoL) && trans.get(i).getCharacter() == '_')
+            {
+                estadoL = trans.get(i).getEnd();
+            }
+            
+            if(trans.get(i).getStart().equals(estadoL) && trans.get(i).getCharacter() == sigmaL)
+            {
+                String local = (trans.get(i).getEnd() + " ");
+                transicion = (transicion + local);
+            }
+        }
+        return transicion;
+    }
 
 	public static void main(String[] args) {
 		new Tarea1();
@@ -70,7 +93,7 @@ public class Tarea1
 			String aux = "a"; //parche 
 
 			for (int i = 0; i < characters.length ; i++) {
-				if(characters[i] != '.' || characters[i] != '*')
+				if(characters[i] != '.' && characters[i] != '*')
 				{
 					String stat = crearEstado(cont);
 					cont++;
@@ -97,9 +120,7 @@ public class Tarea1
 					String end = crearEstado(cont);
 					states.add(end);
 					cont++;
-					Trans t1 = new Trans(start, end, characters[i-1]);
 					Trans revT = new Trans(end,start, '_');
-					trans.add(t1);
 					trans.add(revT);
 
 					String aux2 = crearEstado(cont);
@@ -144,11 +165,31 @@ public class Tarea1
 			trans.get(i).printTransition();
 		}
 
-
-		HashMap<Integer,ArrayList<String>> statesMap = new HashMap<>();
-		cont = 0;
-		
-
+                
+        //conversion a AFND
+	String[][] matriz = new String[states.size()][sigma.size()+1];
+        for (int i = 0; i < states.size(); i++)
+        {
+            for (int j = 0; j < sigma.size()+1; j++)
+            {
+                if(j == 0)
+                    matriz[i][j] = states.get(i);
+                
+                else if(j <= sigma.size() )
+                    matriz[i][j] = obtenerTransicion(i, j-1, states, sigma, trans);
+            }
+            
+        }
+        System.out.println("matriz");
+        for (int i = 0; i < states.size(); i++)
+        {
+            for (int j = 0; j < sigma.size()+1; j++)
+            {
+                System.out.println("i: " + i + " j: " + j + " " +matriz[i][j]);
+            }
+        }
+        
+        
     }
 }
 
@@ -163,7 +204,23 @@ class Trans
 		this.start = s;
 		this.character = c;
 		this.end = e;
+                
 	} 
+
+        public String getStart()
+        {
+            return start;
+        }
+
+        public String getEnd()
+        {
+            return end;
+        }
+
+        public char getCharacter()
+        {
+            return character;
+        }
 
 	public void printTransition()
 	{
