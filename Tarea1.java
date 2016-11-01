@@ -66,7 +66,7 @@ public class Tarea1
 			cont++;
 			states.add(start);
 			Trans t = new Trans(s, start, '_');
-
+                        trans.add(t);
 			String aux = "a"; //parche 
 
 			for (int i = 1; i < characters.length ; i++) {
@@ -93,8 +93,8 @@ public class Tarea1
 						String eFirst = crearEstado(cont);
 						cont++;
 						states.add(eFirst);
-						Trans t = new Trans(start, eFirst, characters[i-2]);
-						trans.add(t);
+						Trans t1 = new Trans(start, eFirst, characters[i-2]);
+						trans.add(t1);
 
 						String empty = crearEstado(cont);
 						cont++;
@@ -102,14 +102,14 @@ public class Tarea1
 						Trans t2 = new Trans(eFirst, empty, '_');
 						trans.add(t2);
 
-						String eSecond = crearEstado(cont);
+						/*String eSecond = crearEstado(cont);
 						cont++;
 						states.add(eSecond);
 						Trans t3 = new Trans(empty, eSecond, characters[i]);
-						trans.add(t3);
+						trans.add(t3);*/
 
-						start = eSecond;
-						aux = empty;
+						start = empty;
+						aux = eFirst;
 					}
 				}
 				else if(characters[i] == '*')
@@ -134,9 +134,9 @@ public class Tarea1
 						String end = crearEstado(cont);
 						states.add(end);
 						cont++;
-						Trans t = new Trans(start, end, characters[i-1]);
+						Trans t1 = new Trans(start, end, characters[i-1]);
 						Trans revT = new Trans(end,start, '_');
-						trans.add(t);
+						trans.add(t1);
 						trans.add(revT);
 
 						String aux2 = crearEstado(cont);
