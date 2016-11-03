@@ -17,6 +17,7 @@ public class Tarea1
     public String obtenerTransicion(int estadoI, int sigmaJ, ArrayList<String> states, ArrayList<Character> sigma, ArrayList<Trans> trans)
     {
         String estadoL = states.get(estadoI);
+        String estadoInicio = estadoL;
         char sigmaL = sigma.get(sigmaJ);
         
         String transicion = "";
@@ -27,13 +28,31 @@ public class Tarea1
             {
                 estadoL = trans.get(i).getEnd();
             }
-            
             if(trans.get(i).getStart().equals(estadoL) && trans.get(i).getCharacter() == sigmaL)
             {
                 String local = (trans.get(i).getEnd() + " ");
                 transicion = (transicion + local);
             }
         }
+        //termina y no encontro la estrella
+        estadoL = estadoInicio;
+        for (int i = 0; i < trans.size(); i++)
+        {
+            if(trans.get(i).getStart().equals(estadoL) && trans.get(i).getCharacter() == '_')
+            {
+                estadoL = trans.get(i).getEnd();
+                for (int j = i; j >= 0; j--)
+                {
+                    if(trans.get(j).getStart().equals(estadoL) && trans.get(j).getCharacter() == sigmaL)
+                    {
+                        String local = (trans.get(j).getEnd() + " ");
+                        transicion = (transicion + local);
+                    }
+                }
+            }
+            estadoL = estadoInicio;
+        }
+        
         return transicion;
     }
 
