@@ -45,7 +45,7 @@ public class Tarea1
                 {
                     if(trans.get(j).getStart().equals(estadoL) && trans.get(j).getCharacter() == sigmaL)
                     {
-                        String local = (trans.get(j).getEnd() + " " + "*");
+                        String local = (trans.get(j).getEnd() + " ");
                         transicion = (transicion + local);
                     }
                 }
@@ -187,7 +187,6 @@ public class Tarea1
         ArrayList<String> states2 = new ArrayList<>();
         ArrayList<Trans> trans2 = new ArrayList<>();
         ArrayList<String> finals2 = new ArrayList<>();
-        String sumidero = "x";
         
         cont = 0;
         String estado = crearEstado(cont);
@@ -225,10 +224,10 @@ public class Tarea1
         String qa = "";
         String sa = "";
         String st = "";
-        String last = "";
+        String last = s;
         String[] transSplit = null;
-        boolean isSumidero = false;
         boolean flag = false;
+        boolean isKleene = false;
 
         int size = states.size();	
         
@@ -258,50 +257,63 @@ public class Tarea1
                         
                         if(states.contains(estadoSplit))
                         {
-                            st = crearEstado(cont);
-                            cont++;
-                            states2.add(st);
-                            if(j <= sigma.size() )
-                            {
-                                Trans t = new Trans(s, st, sigma.get(j-1));
-                                trans2.add(t);
+                        	for (int l = 0; l < size ; l++) {
+                      			if(matriz[l][0].equals(estadoSplit))
+                      			{
+                      				String[] auxSplit = matriz[l][j].split(" ");
+                      				for(int p = 0; p < auxSplit.length ; p++)
+                      				{
+                      					if(matriz[l][0].equals(auxSplit[p]))
+                      					{
+                      						isKleene = true;
+                      						i = l;
+                      						Trans kl = new Trans(last,last,sigma.get(j-1));
+                      						trans2.add(kl);
 
-                            }
-                            //System.out.println("Crea un nuevo estado" + "st: "  + st);
-                            states.remove(estadoSplit);
+
+                      					}
+                      				}
+
+                      			}
+                        		
+                        	}
+                        	if(!isKleene)
+                        	{
+	                            st = crearEstado(cont);
+	                            cont++;
+	                            states2.add(st);
+	                            if(j <= sigma.size() )
+	                            {
+	                                Trans t = new Trans(s, st, sigma.get(j-1));
+	                                trans2.add(t);
+
+	                            }
+	                            //System.out.println("Crea un nuevo estado" + "st: "  + st);
+	                            states.remove(estadoSplit);
+	                        }
                         }
                         else if(i-1 >= 0 && matriz[i][j].equals(matriz[i-1][j]) && !flag)
                         {
                             k = transSplit.length;
                             //System.out.println("entra cuando son iguales");
                         }
-
                         else if (matriz[i][j].equals(""))
                         {
-                            if(!isSumidero)
-                            {
-                                states2.add(sumidero);
-                                isSumidero = true;
-                            }
-                            //System.out.println("Entra al sumidero");
-                            if(j <= sigma.size() )
-                            {
-                                Trans t = new Trans(s, sumidero, sigma.get(j-1));
-                                if(!trans2.contains(t))
-                                {
-                                    trans2.add(t);
-                                }
-                            }
+                            continue; 
                         }
 
                     }
+                    isKleene = false;
                 }
                 
                 
                 
             }
             flag = false;
-            last = st;
+            if(!st.equals(""))
+            {
+            	last = st; 
+            }
                 
         }
         
