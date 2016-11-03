@@ -10,7 +10,7 @@ public class Tarea1
     
     public String crearEstado(int contador)
     {
-        //contador++;
+//        contador++;
         return ("q" + contador);
     }
     
@@ -164,10 +164,25 @@ public class Tarea1
 		for (int i = 0; i < trans.size(); i++ ) {
 			trans.get(i).printTransition();
 		}
-
                 
+                
+        ArrayList<String> states2 = new ArrayList<>();
+        ArrayList<Trans> trans2 = new ArrayList<>();
+        ArrayList<String> finals2 = new ArrayList<>();
+        String sumidero = "x";
+        
+        cont = 0;
+        String estado = crearEstado(cont);
+        cont++;
+        states2.add(estado);
+        for (int i = 0; i < states2.size(); i++)
+        {
+            System.out.println("s2: " + states.get(i));
+            
+        }
         //conversion a AFND
 	String[][] matriz = new String[states.size()][sigma.size()+1];
+        
         for (int i = 0; i < states.size(); i++)
         {
             for (int j = 0; j < sigma.size()+1; j++)
@@ -177,24 +192,122 @@ public class Tarea1
                 
                 else if(j <= sigma.size() )
                     matriz[i][j] = obtenerTransicion(i, j-1, states, sigma, trans);
-            }
-            
+                
+            }            
         }
-        System.out.println("matriz");
+        
+        String qa = "";
+        String sa = "";
+        String st = "";
+        String last = "";
+        String[] transSplit = null;
+        boolean isSumidero = false;
+        boolean flag = false;
+        
         for (int i = 0; i < states.size(); i++)
         {
             for (int j = 0; j < sigma.size()+1; j++)
             {
-                System.out.println("i: " + i + " j: " + j + " " +matriz[i][j]);
+                //if(i-1 > 0 && j != 0 && j+1 < sigma.size() && matriz[i-1][j].equals(matriz[i][j]) && matriz[i-1][j+1].equals(matriz[i][j+1])){continue;}
+                if(j == 0){
+                    qa = matriz[i][j];
+                }
+                else if(j <= sigma.size())
+                {
+                    sa = matriz[i][j];
+                    transSplit = sa.split(" ");
+                    for (int k = 0; k < transSplit.length; k++)
+                    {
+                        String estadoSplit = transSplit[k];
+                        if(i-1 >= 0 && !matriz[i][j].equals(matriz[i-1][j]) && !flag)
+                        {
+                            s = last;
+                            k = 0;
+                            j = 0;
+                            flag = true;
+                            System.out.println("entra cuando no son iguales");
+                        }
+                        
+                        if(states.contains(estadoSplit))
+                        {
+                            st = crearEstado(cont);
+                            cont++;
+                            states2.add(st);
+                            if(j <= sigma.size() )
+                            {
+                                Trans t = new Trans(s, st, sigma.get(j-1));
+                                trans2.add(t);
+
+                            }
+                            System.out.println("Crea un nuevo estado");
+                            states.remove(estadoSplit);
+                            flag = false;
+                        }
+                        else if(i-1 >= 0 && matriz[i][j].equals(matriz[i-1][j]) && !flag)
+                        {
+                            k = transSplit.length;
+                            System.out.println("entra cuando son iguales");
+                        }
+
+                        else if (matriz[i][j].equals(""))
+                        {
+                            //agregar sumidero 1 vez
+                            if(!isSumidero)
+                            {
+                                states2.add(sumidero);
+                                isSumidero = true;
+                            }
+                            System.out.println("Entra al sumidero");
+                            if(j <= sigma.size() )
+                            {
+                                //System.out.println("entra°!°°°");
+                                Trans t = new Trans(s, sumidero, sigma.get(j-1));
+                                if(!trans2.contains(t))
+                                {
+                                    trans2.add(t);
+                                    //System.out.println("holi");
+                                }
+                                //System.out.println("entra2222222222222");
+                                //System.out.println("jSum: " + j);
+                                //System.out.println("st: " + st);
+                                //t.printTransition();
+                            }
+                        }
+                        if(i-1 >= 0 && !matriz[i][j].equals(matriz[i-1][j]))
+                        {
+                            s = last;
+                            k = 0;
+                            System.out.println("entra cuando no son iguales");
+                        }
+
+                    }
+                }
+                
+                
+                
             }
+            flag = false;
+            last = st;
+                
         }
         
+        System.out.println("#######################################");
         
+        System.out.print("Estados: ");
+        for (int i = 0; i < states2.size()-1; i++) {
+                System.out.print(states2.get(i) + ", ");
+        }
+        System.out.println(states2.get(states2.size()-1));
+
+        System.out.print("Transiciones: ");
+        for (int i = 0; i < trans2.size(); i++ ) {
+                trans2.get(i).printTransition();
+        }
     }
 }
 
 
-class Trans
+class Trans implements Comparable<Trans>
 {
 	String start, end;
 	char character;
@@ -228,4 +341,13 @@ class Trans
 		System.out.print(this.character + " , ");
 		System.out.println(this.end);
 	}
+
+    @Override
+    public int compareTo(Trans o)
+    {
+        if(this.start.equals(o.start) && this.end.equals(o.end) && this.character == o.character)
+            return 1;
+        else
+            return 0;
+    }
 }
