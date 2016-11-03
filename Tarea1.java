@@ -89,7 +89,7 @@ public class Tarea1
 			cont++;
 			states.add(start);
 			Trans t = new Trans(s, start, '_');
-                        trans.add(t);
+            trans.add(t);
 			String aux = "a"; //parche 
 
 			for (int i = 0; i < characters.length ; i++) {
@@ -101,7 +101,9 @@ public class Tarea1
 					Trans t1 = new Trans(start, stat, characters[i]);
 					trans.add(t1);
 
+					aux = start;
 					start = stat;
+
 				}
 
 				if(characters[i] == '.')
@@ -120,18 +122,15 @@ public class Tarea1
 					String end = crearEstado(cont);
 					states.add(end);
 					cont++;
-					Trans revT = new Trans(end,start, '_');
+					Trans revT = new Trans(start,aux, '_');
 					trans.add(revT);
-
-					String aux2 = crearEstado(cont);
-					cont++;
-					states.add(aux2);
-					Trans t2 = new Trans(start, aux2, '_');
-					Trans t3 = new Trans(end, aux2, '_');
+					Trans t2 = new Trans(start, end, '_');
+					Trans t3 = new Trans(aux, end, '_');
 					trans.add(t2);
 					trans.add(t3);
 
-					start = aux2;
+					aux = start;
+					start = end;
 		
 				}
 				
@@ -180,8 +179,9 @@ public class Tarea1
             System.out.println("s2: " + states.get(i));
             
         }
-        //conversion a AFND
-	String[][] matriz = new String[states.size()][sigma.size()+1];
+
+        //conversion a AFD
+		String[][] matriz = new String[states.size()][sigma.size()+1];
         
         for (int i = 0; i < states.size(); i++)
         {
@@ -195,6 +195,13 @@ public class Tarea1
                 
             }            
         }
+
+        for (int i = 0; i < states.size(); i++) {
+        	for (int j = 0;j < sigma.size()+1 ; j++) {
+        		System.out.println("i: " + i + " j: " + j + "  "+ matriz[i][j]);
+        	}
+        	System.out.println(" ");
+        }
         
         String qa = "";
         String sa = "";
@@ -203,13 +210,15 @@ public class Tarea1
         String[] transSplit = null;
         boolean isSumidero = false;
         boolean flag = false;
+
+        int size = states.size();	
         
-        for (int i = 0; i < states.size(); i++)
+        for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < sigma.size()+1; j++)
-            {
-                //if(i-1 > 0 && j != 0 && j+1 < sigma.size() && matriz[i-1][j].equals(matriz[i][j]) && matriz[i-1][j+1].equals(matriz[i][j+1])){continue;}
-                if(j == 0){
+            {  
+            	//System.out.println("i: " + i);	
+            	if(j == 0){
                     qa = matriz[i][j];
                 }
                 else if(j <= sigma.size())
@@ -223,9 +232,9 @@ public class Tarea1
                         {
                             s = last;
                             k = 0;
-                            j = 0;
+                            j = 1;
                             flag = true;
-                            System.out.println("entra cuando no son iguales");
+                            //System.out.println("entra cuando no son iguales" + " s: " + s);
                         }
                         
                         if(states.contains(estadoSplit))
@@ -239,45 +248,31 @@ public class Tarea1
                                 trans2.add(t);
 
                             }
-                            System.out.println("Crea un nuevo estado");
+                            //System.out.println("Crea un nuevo estado" + "st: "  + st);
                             states.remove(estadoSplit);
-                            flag = false;
                         }
                         else if(i-1 >= 0 && matriz[i][j].equals(matriz[i-1][j]) && !flag)
                         {
                             k = transSplit.length;
-                            System.out.println("entra cuando son iguales");
+                            //System.out.println("entra cuando son iguales");
                         }
 
                         else if (matriz[i][j].equals(""))
                         {
-                            //agregar sumidero 1 vez
                             if(!isSumidero)
                             {
                                 states2.add(sumidero);
                                 isSumidero = true;
                             }
-                            System.out.println("Entra al sumidero");
+                            //System.out.println("Entra al sumidero");
                             if(j <= sigma.size() )
                             {
-                                //System.out.println("entra°!°°°");
                                 Trans t = new Trans(s, sumidero, sigma.get(j-1));
                                 if(!trans2.contains(t))
                                 {
                                     trans2.add(t);
-                                    //System.out.println("holi");
                                 }
-                                //System.out.println("entra2222222222222");
-                                //System.out.println("jSum: " + j);
-                                //System.out.println("st: " + st);
-                                //t.printTransition();
                             }
-                        }
-                        if(i-1 >= 0 && !matriz[i][j].equals(matriz[i-1][j]))
-                        {
-                            s = last;
-                            k = 0;
-                            System.out.println("entra cuando no son iguales");
                         }
 
                     }
@@ -291,7 +286,7 @@ public class Tarea1
                 
         }
         
-        System.out.println("#######################################");
+        //System.out.println("#######################################");
         
         System.out.print("Estados: ");
         for (int i = 0; i < states2.size()-1; i++) {
