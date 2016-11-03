@@ -45,7 +45,7 @@ public class Tarea1
                 {
                     if(trans.get(j).getStart().equals(estadoL) && trans.get(j).getCharacter() == sigmaL)
                     {
-                        String local = (trans.get(j).getEnd() + " ");
+                        String local = (trans.get(j).getEnd() + " " + "*");
                         transicion = (transicion + local);
                     }
                 }
