@@ -30,8 +30,32 @@ public class Tarea1
             }
             if(trans.get(i).getStart().equals(estadoL) && trans.get(i).getCharacter() == sigmaL)
             {
-                String local = (trans.get(i).getEnd() + " ");
-                transicion = (transicion + local);
+                if(!transicion.contains(trans.get(i).getEnd()) )
+                    {
+                        String local = (trans.get(i).getEnd() + " ");
+                        transicion = (transicion + local);
+                    }
+            }
+            String estadoL2 = estadoInicio;
+            
+            //encontrar |
+            if(trans.get(i).getStart().equals(estadoInicio))
+            {
+                for (int j = i; j < trans.size(); j++)
+                {
+                    if(trans.get(j).getStart().equals(estadoL2) && trans.get(j).getCharacter() == '_')
+                    {
+                        estadoL2 = trans.get(j).getEnd();
+                    }
+                    if(trans.get(j).getStart().equals(estadoL2) && trans.get(j).getCharacter() == sigmaL)
+                    {
+                        if(!transicion.contains(trans.get(j).getEnd()) )
+                        {
+                            String local = (trans.get(j).getEnd() + " ");
+                            transicion = (transicion + local);
+                        }
+                    }
+                }
             }
         }
         //termina y no encontro la estrella
@@ -45,8 +69,11 @@ public class Tarea1
                 {
                     if(trans.get(j).getStart().equals(estadoL) && trans.get(j).getCharacter() == sigmaL)
                     {
-                        String local = (trans.get(j).getEnd() + " ");
-                        transicion = (transicion + local);
+                        if(!transicion.contains(trans.get(j).getEnd()) )
+                        {
+                            String local = (trans.get(j).getEnd() + " ");
+                            transicion = (transicion + local);
+                        }
                     }
                 }
             }
@@ -257,40 +284,38 @@ public class Tarea1
                         
                         if(states.contains(estadoSplit))
                         {
-                        	for (int l = 0; l < size ; l++) {
-                      			if(matriz[l][0].equals(estadoSplit))
-                      			{
-                      				String[] auxSplit = matriz[l][j].split(" ");
-                      				for(int p = 0; p < auxSplit.length ; p++)
-                      				{
-                      					if(matriz[l][0].equals(auxSplit[p]))
-                      					{
-                      						isKleene = true;
-                      						i = l;
-                      						Trans kl = new Trans(last,last,sigma.get(j-1));
-                      						trans2.add(kl);
+                            for (int l = 0; l < size ; l++) 
+                            {
+                                if(matriz[l][0].equals(estadoSplit))
+                                {
+                                    String[] auxSplit = matriz[l][j].split(" ");
+                                    for(int p = 0; p < auxSplit.length ; p++)
+                                    {
+                                            if(matriz[l][0].equals(auxSplit[p]))
+                                            {
+                                                    isKleene = true;
+                                                    i = l;
+                                                    Trans kl = new Trans(last,last,sigma.get(j-1));
+                                                    trans2.add(kl);
+                                            }
+                                    }
 
+                                }
+                        }
+                        if(!isKleene)
+                        {
+                            st = crearEstado(cont);
+                            cont++;
+                            states2.add(st);
+                            if(j <= sigma.size() )
+                            {
+                                Trans t = new Trans(s, st, sigma.get(j-1));
+                                trans2.add(t);
 
-                      					}
-                      				}
-
-                      			}
-                        		
-                        	}
-                        	if(!isKleene)
-                        	{
-	                            st = crearEstado(cont);
-	                            cont++;
-	                            states2.add(st);
-	                            if(j <= sigma.size() )
-	                            {
-	                                Trans t = new Trans(s, st, sigma.get(j-1));
-	                                trans2.add(t);
-
-	                            }
-	                            //System.out.println("Crea un nuevo estado" + "st: "  + st);
-	                            states.remove(estadoSplit);
-	                        }
+                            }
+                            //System.out.println("Crea un nuevo estado" + "st: "  + st);
+                            states.remove(estadoSplit);
+                        }
                         }
                         else if(i-1 >= 0 && matriz[i][j].equals(matriz[i-1][j]) && !flag)
                         {
