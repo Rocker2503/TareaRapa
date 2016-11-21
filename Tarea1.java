@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.regex.*;
 
 public class Tarea1
 {
@@ -354,6 +355,21 @@ public class Tarea1
         for (int i = 0; i < trans2.size(); i++ ) {
                 trans2.get(i).printTransition();
         }
+        
+        //ocurrencias
+        Pattern patron = Pattern.compile(regex);
+        Matcher encaja = patron.matcher(text);
+//        System.out.println("paiosk: " + encaja.replaceAll("1"));
+        System.out.println("paiosk: " + encaja.find());
+        System.out.println("paiosk: " + encaja.replaceFirst("1"));
+        text = encaja.replaceFirst("1");
+        System.out.println("text: "+ text);
+        
+        Pattern patron2 = Pattern.compile(regex);
+        Matcher encaja2 = patron.matcher(text);
+        System.out.println("paiosk: " + encaja.find());
+        System.out.println("paiosk: " + encaja.replaceFirst("1"));
+
     }
 }
 
