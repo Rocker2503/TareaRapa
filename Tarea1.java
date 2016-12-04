@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.regex.*;
 
 public class Tarea1
 {
@@ -83,6 +82,19 @@ public class Tarea1
         
         return transicion;
     }
+    
+    public boolean esFinal(String estado, ArrayList<String> finales)
+    {
+        for (int i = 0; i < finales.size(); i++)
+        {
+            if(finales.get(i).equals(estado))
+            {
+                return true;
+            }
+            
+        }
+        return false;
+    }
 
 	public static void main(String[] args) {
 		new Tarea1();
@@ -111,24 +123,6 @@ public class Tarea1
 		states.add(q);
         String[] textSplit = regex.split("[|]");
                 
-                /*for (int i = 0; i < textSplit.length; i++)
-                {
-                    System.out.println("j: " + textSplit[i]);
-
-                }*/
-                
-                //clausula |
-                 //agregar estados             
-                //agregarEstado(states, cont);
-                //agregarEstado(states, cont);
-                
-                
-        //for (int i = 0; i < textSplit.length; i++)
-        //{
-            System.out.println("s: " + states.get(0));            
-        //}
-		
-         
 		for (int j = 0;j < textSplit.length ;j++ ) {
 				
 			char[] characters = textSplit[j].toCharArray();
@@ -201,19 +195,27 @@ public class Tarea1
 		}
                 finals.add(finalState);
                 
+                System.out.println("");
                 System.out.println("AFND: ");
-		System.out.print("Estados: ");
+		System.out.print("K= ");
 		for (int i = 0; i < states.size()-1; i++) {
 			System.out.print(states.get(i) + ", ");
 		}
 		System.out.println(states.get(states.size()-1));
-		
-		System.out.print("Transiciones: ");
+                
+                System.out.print("Sigma= ");
+                for (int i = 0; i < sigma.size()-1; i++)
+                {
+                    System.out.print(sigma.get(i) + ", ");
+		}
+		System.out.println(sigma.get(sigma.size()-1));
+                
+		System.out.println("Delta: ");
 		for (int i = 0; i < trans.size(); i++ ) {
 			trans.get(i).printTransition();
 		}
-                System.out.println("s: " + s);
-                System.out.print("F:");
+                System.out.println("s= " + s);
+                System.out.print("F= ");
                 for (int i = 0; i < finals.size()-1; i++)
                 {
                     System.out.print(finals.get(i) + ", ");
@@ -246,13 +248,15 @@ public class Tarea1
                 
             }            
         }
-/*
-        for (int i = 0; i < states.size(); i++) {
-        	for (int j = 0;j < sigma.size()+1 ; j++) {
-        		System.out.println("i: " + i + " j: " + j + "  "+ matriz[i][j]);
-        	}
-        	System.out.println(" ");
-        }*/
+        System.out.println("MATRIZ!!!!!!!!!!!!");
+        for (int i = 0; i < states.size(); i++)
+        {
+            for (int j = 0; j < sigma.size()+1; j++)
+            {
+                System.out.println("i: "+i+ " j: "+ j+ " "+matriz[i][j]);
+                
+            }
+        }
         
         String qa = "";
         String sa = "";
@@ -367,43 +371,61 @@ public class Tarea1
                 cambiado = false;
             }
             localInicio = s2;
-            
-            
         }
         
         //System.out.println("#######################################");
         System.out.println("");
         System.out.println("AFD: ");
-        System.out.print("Estados: ");
+        System.out.print("K= ");
         for (int i = 0; i < states2.size()-1; i++) {
                 System.out.print(states2.get(i) + ", ");
         }
         System.out.println(states2.get(states2.size()-1));
 
-        System.out.print("Transiciones: ");
+        System.out.print("Sigma= ");
+        for (int i = 0; i < sigma.size()-1; i++)
+        {
+            System.out.print(sigma.get(i) + ", ");
+        }
+        System.out.println(sigma.get(sigma.size()-1));
+                
+        System.out.println("Delta: ");
         for (int i = 0; i < trans2.size(); i++ ) {
                 trans2.get(i).printTransition();
         }
-        System.out.println("s: " + s2);
-        System.out.print("F: ");
+        System.out.println("s= " + s2);
+        System.out.print("F= ");
         for (int i = 0; i < finals2.size()-1; i++)
-                {
-                    System.out.print(finals2.get(i) + ", ");
-                }
-                System.out.println(finals2.get(finals2.size()-1));
+        {
+            System.out.print(finals2.get(i) + ", ");
+        }
+        System.out.println(finals2.get(finals2.size()-1));
         
         //ocurrencias
-        /*Pattern patron = Pattern.compile(regex);
-        Matcher encaja = patron.matcher(text);
-//        System.out.println("paiosk: " + encaja.replaceAll("1"));
-        System.out.println("TEXT: "+text);
         System.out.println("");
-        System.out.println("paiosk: " + encaja.find());
-        System.out.println("matches: "+encaja.matches());
-        System.out.println("paiosk: " + encaja.replaceFirst("."));
-        text = encaja.replaceFirst(".");
-        System.out.println("text: "+ text);
-        System.out.println("matches: "+encaja.matches());*/
+        System.out.println("Ocurrencias: ");
+        localInicio = s2;
+        for (int i = 0; i < text.length(); i++)
+        {
+            
+            char letra = text.charAt(i);
+            for (int j = 0; j < trans2.size(); j++)
+            {
+                if(trans2.get(j).getStart().equals(localInicio) &&
+                        trans2.get(j).getCharacter() == letra)
+                {
+                    localInicio = trans2.get(j).getEnd();
+                    break;
+                }
+                
+            }
+            if(esFinal(localInicio, finals2))
+            {
+                System.out.println((i+1));
+                localInicio = s2;
+
+            }
+        }
         
 
     }
