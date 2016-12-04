@@ -199,7 +199,9 @@ public class Tarea1
 			Trans t = new Trans(finals.get(i), finalState, '_');
 			trans.add(t);
 		}
-
+                finals.add(finalState);
+                
+                System.out.println("AFND: ");
 		System.out.print("Estados: ");
 		for (int i = 0; i < states.size()-1; i++) {
 			System.out.print(states.get(i) + ", ");
@@ -210,8 +212,16 @@ public class Tarea1
 		for (int i = 0; i < trans.size(); i++ ) {
 			trans.get(i).printTransition();
 		}
+                System.out.println("s: " + s);
+                System.out.print("F:");
+                for (int i = 0; i < finals.size()-1; i++)
+                {
+                    System.out.print(finals.get(i) + ", ");
+                }
+                System.out.println(finals.get(finals.size()-1));
+
                 
-                
+        String s2 = states.get(0);
         ArrayList<String> states2 = new ArrayList<>();
         ArrayList<Trans> trans2 = new ArrayList<>();
         ArrayList<String> finals2 = new ArrayList<>();
@@ -220,11 +230,6 @@ public class Tarea1
         String estado = crearEstado(cont);
         cont++;
         states2.add(estado);
-        for (int i = 0; i < states2.size(); i++)
-        {
-            System.out.println("s2: " + states.get(i));
-            
-        }
 
         //conversion a AFD
 		String[][] matriz = new String[states.size()][sigma.size()+1];
@@ -241,13 +246,13 @@ public class Tarea1
                 
             }            
         }
-
+/*
         for (int i = 0; i < states.size(); i++) {
         	for (int j = 0;j < sigma.size()+1 ; j++) {
         		System.out.println("i: " + i + " j: " + j + "  "+ matriz[i][j]);
         	}
         	System.out.println(" ");
-        }
+        }*/
         
         String qa = "";
         String sa = "";
@@ -343,8 +348,32 @@ public class Tarea1
                 
         }
         
-        //System.out.println("#######################################");
+        //encontrar finales
+        String localInicio = s2;
+        boolean cambiado = false;
+        for (int i = 0; i < trans2.size(); i++)
+        {
+            for (int j = i; j < trans2.size(); j++)
+            {
+                if(trans2.get(j).getStart().equals(localInicio))
+                {
+                    localInicio = trans2.get(j).getEnd();
+                    cambiado = true;
+                }
+            }
+            if(cambiado == true)
+            {
+                finals2.add(localInicio);
+                cambiado = false;
+            }
+            localInicio = s2;
+            
+            
+        }
         
+        //System.out.println("#######################################");
+        System.out.println("");
+        System.out.println("AFD: ");
         System.out.print("Estados: ");
         for (int i = 0; i < states2.size()-1; i++) {
                 System.out.print(states2.get(i) + ", ");
@@ -355,20 +384,27 @@ public class Tarea1
         for (int i = 0; i < trans2.size(); i++ ) {
                 trans2.get(i).printTransition();
         }
+        System.out.println("s: " + s2);
+        System.out.print("F: ");
+        for (int i = 0; i < finals2.size()-1; i++)
+                {
+                    System.out.print(finals2.get(i) + ", ");
+                }
+                System.out.println(finals2.get(finals2.size()-1));
         
         //ocurrencias
-        Pattern patron = Pattern.compile(regex);
+        /*Pattern patron = Pattern.compile(regex);
         Matcher encaja = patron.matcher(text);
 //        System.out.println("paiosk: " + encaja.replaceAll("1"));
+        System.out.println("TEXT: "+text);
+        System.out.println("");
         System.out.println("paiosk: " + encaja.find());
-        System.out.println("paiosk: " + encaja.replaceFirst("1"));
-        text = encaja.replaceFirst("1");
+        System.out.println("matches: "+encaja.matches());
+        System.out.println("paiosk: " + encaja.replaceFirst("."));
+        text = encaja.replaceFirst(".");
         System.out.println("text: "+ text);
+        System.out.println("matches: "+encaja.matches());*/
         
-        Pattern patron2 = Pattern.compile(regex);
-        Matcher encaja2 = patron.matcher(text);
-        System.out.println("paiosk: " + encaja.find());
-        System.out.println("paiosk: " + encaja.replaceFirst("1"));
 
     }
 }
