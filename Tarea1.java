@@ -248,15 +248,6 @@ public class Tarea1
                 
             }            
         }
-        System.out.println("MATRIZ!!!!!!!!!!!!");
-        for (int i = 0; i < states.size(); i++)
-        {
-            for (int j = 0; j < sigma.size()+1; j++)
-            {
-                System.out.println("i: "+i+ " j: "+ j+ " "+matriz[i][j]);
-                
-            }
-        }
         
         String qa = "";
         String sa = "";
